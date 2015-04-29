@@ -1,0 +1,58 @@
+
+#NOTE!!! 
+#If you want to ignore something in a folder which name contains 
+#a whitespace then you have to use \ in front of the space. 
+#Like "Delphi\ Client" for the folder "Delphi Client".
+#The same goes of course for specific files named with whitespaces.
+
+#Delphi
+*.~dpr
+*.dcu
+*.~pas
+*.~dfm
+*.~ddp
+*.ddp
+
+#ignore thumbnails created by windows
+Thumbs.db
+
+#Temp sql files
+*.~sql
+
+#Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.sln.docstates
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+[Oo]bj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+x64/
+build/
+*.dsk
+*.~dsk
+*.orig
+
+.idea/*
+untitled/*
+services/.idea/*
+#Don't ignore
