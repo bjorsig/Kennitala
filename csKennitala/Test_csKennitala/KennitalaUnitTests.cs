@@ -104,6 +104,10 @@ namespace Test_csKennitala
                 dagur = kt.FaFaedingardag();
                 Assert.Fail("Ætti að hafa kastað villu");
             }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("Kennitölustrengur má bara innihalda tölustafi", ex.Message);
+            }
             catch (Exception ex)
             {
                 Assert.AreEqual("Ekki hægt að sækja dag úr ólöglegri kennitölu", ex.Message);

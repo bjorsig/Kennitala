@@ -11,7 +11,22 @@ namespace csKennitala
     /// </summary>
     public class Kennitala
     {
-        public string Kt{ get; set; }
+        private string kt = string.Empty;
+        public string Kt
+        {
+            get { return kt; }
+            set
+            {
+                if (TolustafirEingongu(value))
+                {
+                    kt = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Kennitölustrengur má bara innihalda tölustafi");
+                }
+            }
+        }
         
         /// <summary>
         /// Tegund kennitölu; einstaklingur eða fyrirtæki
@@ -23,7 +38,15 @@ namespace csKennitala
 
         public Kennitala(string kt)
         {
-            Kt = kt;
+            if (TolustafirEingongu(kt))
+            {
+                Kt = kt;
+            }
+            else
+            {
+                throw new ArgumentException("Kennitölustrengur getur ekki verið löglegur");
+            }
+
         }
 
         /// <summary>
@@ -94,7 +117,7 @@ namespace csKennitala
         }
 
         /// <summary>
-        /// Reiknar vartölu fyrir kennitölu, þ.e. 9. stafinn í kennitölunni.
+        /// Reiknar vartölu fyrir kennitölu, þ.e. 9. stafinn í kennitölunni.    
         /// Notar aðeins 8 stafi og því er mögulegt að skilgreina 8 stafi og reikna þann níunda.
         /// </summary>
         /// <returns>Vartölu (níunda staf) fyrir skilgreinda kennitölu</returns>
@@ -143,6 +166,16 @@ namespace csKennitala
                 }
             }
             throw new Exception("Kennitölustrengur getur ekki verið löglegur");
+        }
+        bool TolustafirEingongu(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
         }
 
         private int[] margfeldi = new int[8] {3,2,7,6,5,4,3,2};
