@@ -167,6 +167,11 @@ namespace csKennitala
             }
             throw new Exception("Kennitölustrengur getur ekki verið löglegur");
         }
+        /// <summary>
+        /// Athugar hvort strengur inniheldur engöngu tölustafi.
+        /// </summary>
+        /// <param name="str">Strengurinn</param>
+        /// <returns></returns>
         bool TolustafirEingongu(string str)
         {
             foreach (char c in str)
