@@ -23,13 +23,13 @@ instance Show Kennitala where
         (show =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [nr,vartala,öld])
 
 tala :: String -> Char -> Char -> Int
-tala heiti a b = either (error $ heiti ++ " má einungis innihalda tölustafi.") id $ readEither [a,b]
+tala heiti a b = either (error $ heiti ++ " má einungis innihalda tölustafi. Ekki " ++ [a] ++ " og " ++ [b] ++ ".") id $ readEither [a,b]
 
 tölustaf :: String -> Char -> Int
-tölustaf heiti a = let t = fromEnum a - fromEnum '0'
-    in if   t > 9
+tölustaf heiti a = let gildi = fromEnum a - fromEnum '0'
+    in if   gildi > 9
        then error (heiti ++ " á að vera tölustafur.")
-       else t
+       else gildi
 
 vona :: (Monad m) => Bool -> String -> Int -> m Kennitala -> m Kennitala
 vona condition melding gildi kt = if not condition then fail (melding ++ "—Ekki " ++ show gildi ++ ".") else kt
@@ -71,3 +71,4 @@ vartölu listi = if length listi /= 8
 main = (print =<< kennitala "211295-2019")
      >> putStr "Vartala: "
      >> maybe (error "Vartala kemst ekki fyrir í einum tölustaf") print (vartölu [2,1,1,2,9,5,2,0])
+     >>(print =<< kennitala "2112b5-2019")
