@@ -19,22 +19,35 @@ dagur (Kennitala daggildi _ _ _ _ _) =
     else
         daggildi
 
+data Tegund = Einstaklingur | Lögaðili deriving (Show, Eq)
+tegund :: Kennitala -> Tegund
+tegund kt = if dagur kt == daggildi kt then Einstaklingur else Lögaðili
+
 instance Show Kennitala where
     show (Kennitala daggildi mánuður ár nr vartala öld) =
-        (show =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [nr,vartala,öld])
+        (show =<< (\t -> [t `div` 10, t `mod` 10])  =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [nr,vartala,öld])
+
+isRight (Left  _) = False
+isRight (Right _) = True
+
+gildKennitala :: String -> Bool
+gildKennitala = isRight . kennitala
 
 breytaVillu :: (a -> b) -> Either a r -> Either b r
 breytaVillu f = either (Left . f) Right
 
 x & f = f x
 
+krefjast :: (a -> Bool) -> String -> a -> Either String a
+krefjast skilyrði melding x = if skilyrði x
+    then Right x
+    else Left melding
+
 tala :: String -> (Int -> Bool) -> Char -> Char -> String -> Either String Int
 tala heiti skilyrði a b melding = (readEither [a,b]
     & breytaVillu (const $ heiti ++ " má einungis innihalda tölustafi")
-    >>= \gildi ->
-        if skilyrði gildi
-            then Right gildi
-            else Left melding)
+    >>= krefjast skilyrði melding
+    >>= krefjast (0<) (heiti ++ " verður að vera jákvæð"))
     & breytaVillu (++ ", ekki " ++ [a,b] ++ ".")
 
 tölustaf :: String -> Char -> Either String Int
@@ -80,9 +93,3 @@ vartölu strengur = if length strengur /= 8
                 if niðurstaða == 11 then  Just 0
                 else if niðurstaða == 10 then Nothing
                 else Just niðurstaða
-
-
-main = (either error print $ kennitala "211295-2019")
-     >> putStr "Vartala: "
-     >> either error (maybe (error "Vartala kemst ekki fyrir í einum tölustaf") print) (vartölu "21129520")
-     >> (either error print $ kennitala "21129b-2019")
