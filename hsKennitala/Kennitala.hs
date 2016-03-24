@@ -7,7 +7,7 @@ data Kennitala = Kennitala {
                    daggildi :: Int,
                    mánuður :: Int,
                    ár :: Int,
-                   nr :: Int,
+                   raðtala :: Int,
                    vartala :: Int,
                    öld :: Int
                  }
@@ -19,13 +19,19 @@ dagur (Kennitala daggildi _ _ _ _ _) =
     else
         daggildi
 
-data Tegund = Einstaklingur | Lögaðili deriving (Show, Eq)
-tegund :: Kennitala -> Tegund
-tegund kt = if dagur kt == daggildi kt then Einstaklingur else Lögaðili
+data Aðili = Einstaklingur | Lögaðili deriving (Show, Eq)
+kennitöluHafi :: Kennitala -> Aðili
+kennitöluHafi kt = if dagur kt == daggildi kt then Einstaklingur else Lögaðili
+
+-- Listi af tveimur seinustu stöfum tölu.
+-- Nú eða núlli og tölunni, ef talan er minni en 10.
+tveggjaStafaTala :: Int -> [Int]
+tveggjaStafaTala t = [t `div` 10, t `mod` 10]
 
 instance Show Kennitala where
-    show (Kennitala daggildi mánuður ár nr vartala öld) =
-        (show =<< (\t -> [t `div` 10, t `mod` 10])  =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [nr,vartala,öld])
+    show (Kennitala daggildi mánuður ár raðtala vartala öld) =
+        (show =<< tveggjaStafaTala  =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [raðtala,vartala,öld])
+        -- 20 ≤ raðtala, svo fyrri tölustafurinn er aldrei núll => show raðtala == (show =<< tveggjaStafaTala raðtala)
 
 isRight (Left  _) = False
 isRight (Right _) = True

@@ -44,9 +44,9 @@ main = hspec $ do
             vartölu "12016033" `shouldBe` (Right $ Just '8')
         it "Skilar Right Nothing ef vartalan kemst ekki fyrir í einum tölustaf (bókstaf)." $
             vartölu "10101309" `shouldBe` Right Nothing
-    describe "fmap tegund . kennitala" $
+    describe "fmap kennitöluHafi . kennitala" $
         it "ákvarðar hvort kennitala myndi tilheyra einstaklingi eða lögaðila." $ do
-            (fmap tegund . kennitala) "1709715079"  `shouldBe` Right Einstaklingur
-            (fmap tegund . kennitala) "211295-2019" `shouldBe` Right Einstaklingur
-            (fmap tegund . kennitala) "4403044350"  `shouldBe` Right Lögaðili
-            (fmap tegund . kennitala) "440304-4350" `shouldBe` Right Lögaðili
+            (fmap kennitöluHafi . kennitala) "1709715079"  `shouldBe` Right Einstaklingur
+            (fmap kennitöluHafi . kennitala) "211295-2019" `shouldBe` Right Einstaklingur
+            (fmap kennitöluHafi . kennitala) "4403044350"  `shouldBe` Right Lögaðili
+            (fmap kennitöluHafi . kennitala) "440304-4350" `shouldBe` Right Lögaðili
