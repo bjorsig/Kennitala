@@ -62,21 +62,26 @@ tölustaf heiti a = let gildi = fromEnum a - fromEnum '0'
        else Right gildi
 
 kennitala :: String -> Either String Kennitala
-kennitala [dagtugur,dagur,mántugur,mánuður,áratugur,ár,nr1,nr2,vartala,öld] =
+kennitala [dagtugur,dags,mántugur,mán,áratugur,árs,nr1,nr2,vartala,öld] =
     Kennitala <$>
-    tala "Dagsetning" (\dagur -> 0 < dagur && dagur <= 71 && (dagur <= 31 || 41 <= dagur) ) dagtugur dagur
+    tala "Dagsetning" (0 < ) dagtugur dags
         "Daggildi má mest vera 31 fyrir einstaklinga en minnst 41 fyrir félög. Daggildi má vera margt að 71" <*>
-    tala "Mánuður" ((&&) <$> (0<) <*> (<= 12)) mántugur mánuður "Mánuðirnir eru tólf" <*>
-    tala "Ártal" (0 <) áratugur ár "Ár má tákna með hvaða jákvæðu, tveggja stafa tölu sem er" <*>
-    tala "Númer" (0 <=) nr1 nr2 "Raðtala er allt niður í 00, en oftast frá 20" <*>
+    tala "Mánuður" ((&&) <$> (0<) <*> (<= 12)) mántugur mán "Mánuðirnir eru tólf" <*>
+    tala "Ártal" (0 <  ) áratugur árs "Ár má tákna með hvaða jákvæðu, tveggja stafa tölu sem er" <*>
+    tala "Númer" (0 <= ) nr1 nr2 "Raðtala er allt niður í 00, en oftast frá 20" <*>
     tölustaf "Vartala" vartala <*>
     tölustaf "Öld" öld
+
+    >>= (\kt -> let dagar = mánaðardagar (ár kt) (mánuður kt)
+         in krefjast (\kt -> dagur kt <= dagar)
+         ("Dagar í " ++ show (mánuður kt) ++ ". mánuði eru " ++ show dagar ++ " talsins, ekki " ++ show (dagur kt))
+         kt)
+
     >>= \kt ->
-    vartölu [dagtugur,dagur,mántugur,mánuður,áratugur,ár,nr1,nr2]
+    vartölu [dagtugur,dags,mántugur,mán,áratugur,árs,nr1,nr2]
         >>= maybe (Left "Þessi kennitala getur ekki verið rétt. Hún á sér ekki vartölu.")
         (\útreiknuð ->
-            if útreiknuð == vartala
-                then Right kt
+            if útreiknuð == vartala then Right kt
                 else Left $ "Vartalan " ++ [vartala] ++ " stemmir ekki við útreiknaða vartölu " ++ show útreiknuð ++ ".")
 kennitala (dagtug:dag:mántug:mánuð:áratug:ár':'-':rest) = kennitala (dagtug:dag:mántug:mánuð:áratug:ár':rest)
 kennitala _ = Left $ "Kennitala þarf að vera 10 tölustafir, að frátöldu valfrjálsu bandstriki."
@@ -98,3 +103,24 @@ vartölu strengur = if length strengur /= 8
                 if niðurstaða == 11 then  Just 0
                 else if niðurstaða == 10 then Nothing
                 else Just niðurstaða
+
+divisibleBy :: Int -> Int -> Bool
+a `divisibleBy` b = a `mod` b == 0
+
+-- (=>) :: Bool -> Bool -> Bool
+-- True => False = False
+--  _   =>   _   = True
+
+hlaupár :: Int -> Bool
+hlaupár ár = ár `divisibleBy` 4 -- && (ár `divisibleBy` 100) `implies` (ár `divisibleBy` 400)
+
+mánaðardagar :: Int -> Int -> Int
+mánaðardagar ár mánuður = case mánuður of
+    02 -> if hlaupár ár
+        then 29
+        else 28
+    04 -> 30
+    06 -> 30
+    08 -> 30
+    11 -> 30
+    _  -> 31

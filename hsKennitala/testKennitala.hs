@@ -11,35 +11,47 @@ main = hspec $ do
             (fmap show . kennitala) "2112952019"  `shouldBe` Right "211295-2019"
             (fmap show . kennitala) "0101012049"  `shouldBe` Right "010101-2049"
             (fmap show . kennitala) "1001012119"  `shouldBe` Right "100101-2119"
+
     describe "gildKennitala" $ do
-        it "staðfestir að mánaðardagur sé mest 31." $ do
+        it "Man að ap-jún-sept-nóv þrjátíu hver," $ do
+            gildKennitala "0404042019" `shouldBe`  True
+            gildKennitala "3104042099" `shouldBe`  False
+
+            gildKennitala "1111112009" `shouldBe`  True
+            gildKennitala "3111112059" `shouldBe`  False
+        it "en einn til hinir taka sér." $ do
+            gildKennitala "1010102019" `shouldBe`  True
+            gildKennitala "3110102049" `shouldBe`  True
+        it "Veit að hlaupársdagur er ekki nema á fjögurra ára fresti." $ do
+            gildKennitala "290201-2099" `shouldBe` False
+        it "Staðfestir að mánaðardagur sé mest 31." $ do
             gildKennitala "7201002079"  `shouldBe` False
             gildKennitala "7112102109"  `shouldBe` True
             gildKennitala "3201002089"  `shouldBe` False
-        it "staðfestir að mánaðardagur sé minnst 1." $ do
+        it "Staðfestir að mánaðardagur sé minnst 1." $ do
             gildKennitala "0012002599"  `shouldBe` False
             gildKennitala "-012002579"  `shouldBe` False
             gildKennitala "-912002509"  `shouldBe` False
-        it "staðfestir að mánuður sé mest 12." $ do
+        it "Staðfestir að mánuður sé mest 12." $ do
             gildKennitala "010122-009"  `shouldBe` False
-        it "staðfestir að mánuður sé minnst 1." $ do
+        it "Staðfestir að mánuður sé minnst 1." $ do
             gildKennitala "0100122019"  `shouldBe` False
-        it "passar að kennitala innihaldi einungis tölustafi." $ do
+        it "Passar að kennitala innihaldi einungis tölustafi." $ do
             gildKennitala "21129b-2019" `shouldBe` False
             gildKennitala "bókstaflega" `shouldBe` False
             gildKennitala "211295-29-9" `shouldBe` False
             gildKennitala "211295-291-" `shouldBe` False
-        it "leyfir bandstrik, en einungis á réttum stað." $ do
+        it "Leyfir bandstrik, en einungis á réttum stað." $ do
             gildKennitala "211295-2019" `shouldBe` True
             gildKennitala "2112-952919" `shouldBe` False
-        it "samþykkir venjulega kennitölu einstaklings." $ do
+        it "Samþykkir venjulega kennitölu einstaklings." $ do
             gildKennitala "0108982509"  `shouldBe` True
             gildKennitala "1201603389"  `shouldBe` True
             gildKennitala "1010132009"  `shouldBe` True
-        it "hafnar kennitölu af rangri lengd." $ do
+        it "Hafnar kennitölu af rangri lengd." $ do
             gildKennitala "123456789"   `shouldBe` False
             gildKennitala "12345678911" `shouldBe` False
-        it  "samþykkir kennitölu með lága raðtölu." $ do
+        it "Samþykkir kennitölu með lága raðtölu." $ do
             gildKennitala "1110571849"  `shouldBe` True
             gildKennitala "0209581979"  `shouldBe` True
             gildKennitala "0102560039"  `shouldBe` True
