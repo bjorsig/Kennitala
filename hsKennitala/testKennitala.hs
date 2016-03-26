@@ -32,13 +32,18 @@ main = hspec $ do
         it "leyfir bandstrik, en einungis á réttum stað." $ do
             gildKennitala "211295-2019" `shouldBe` True
             gildKennitala "2112-952919" `shouldBe` False
-        it "samþykkir gilda kennitölu." $ do
+        it "samþykkir venjulega kennitölu einstaklings." $ do
             gildKennitala "0108982509"  `shouldBe` True
             gildKennitala "1201603389"  `shouldBe` True
             gildKennitala "1010132009"  `shouldBe` True
         it "hafnar kennitölu af rangri lengd." $ do
             gildKennitala "123456789"   `shouldBe` False
             gildKennitala "12345678911" `shouldBe` False
+        it  "samþykkir kennitölu með lága raðtölu." $ do
+            gildKennitala "1110571849"  `shouldBe` True
+            gildKennitala "0209581979"  `shouldBe` True
+            gildKennitala "0102560039"  `shouldBe` True
+
     describe "vartölu" $ do
         it "reiknar út vartölu (sem bókstaf) útfrá fyrstu 8 tölustöfunum (sem streng)." $ do
             vartölu "12016033" `shouldBe` (Right $ Just '8')

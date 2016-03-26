@@ -52,8 +52,7 @@ krefjast skilyrði melding x = if skilyrði x
 tala :: String -> (Int -> Bool) -> Char -> Char -> String -> Either String Int
 tala heiti skilyrði a b melding = (readEither [a,b]
     & breytaVillu (const $ heiti ++ " má einungis innihalda tölustafi")
-    >>= krefjast skilyrði melding
-    >>= krefjast (0<) (heiti ++ " verður að vera jákvæð"))
+    >>= krefjast skilyrði melding)
     & breytaVillu (++ ", ekki " ++ [a,b] ++ ".")
 
 tölustaf :: String -> Char -> Either String Int
@@ -65,11 +64,11 @@ tölustaf heiti a = let gildi = fromEnum a - fromEnum '0'
 kennitala :: String -> Either String Kennitala
 kennitala [dagtugur,dagur,mántugur,mánuður,áratugur,ár,nr1,nr2,vartala,öld] =
     Kennitala <$>
-    tala "Dagsetning" (\dagur -> dagur <= 71 && (dagur <= 31 || 41 <= dagur) ) dagtugur dagur
+    tala "Dagsetning" (\dagur -> 0 < dagur && dagur <= 71 && (dagur <= 31 || 41 <= dagur) ) dagtugur dagur
         "Daggildi má mest vera 31 fyrir einstaklinga en minnst 41 fyrir félög. Daggildi má vera margt að 71" <*>
-    tala "Mánuður" (<= 12) mántugur mánuður "Mánuðirnir eru tólf" <*>
-    tala "Ártal" (const True) áratugur ár "Ár má tákna með hvaða tveggja stafa tölu sem er" <*>
-    tala "Númer" (>= 20) nr1 nr2 "Einstaklingar eru númeraðir frá 20" <*>
+    tala "Mánuður" ((&&) <$> (0<) <*> (<= 12)) mántugur mánuður "Mánuðirnir eru tólf" <*>
+    tala "Ártal" (0 <) áratugur ár "Ár má tákna með hvaða jákvæðu, tveggja stafa tölu sem er" <*>
+    tala "Númer" (0 <=) nr1 nr2 "Raðtala er allt niður í 00, en oftast frá 20" <*>
     tölustaf "Vartala" vartala <*>
     tölustaf "Öld" öld
     >>= \kt ->
