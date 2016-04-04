@@ -1,16 +1,17 @@
 import Test.Hspec
-import Test.QuickCheck
-import Control.Exception (evaluate)
 import Kennitala
 
 main :: IO ()
 main = hspec $ do
     describe "fmap show . kennitala" $
-        it "athugar hvort kennitala sé lögleg og bætir við bandstriki ef vantar." $ do
+        it "Athugar hvort kennitala sé lögleg og bætir við bandstriki ef vantar." $ do
             (fmap show . kennitala) "211295-2019" `shouldBe` Right "211295-2019"
             (fmap show . kennitala) "2112952019"  `shouldBe` Right "211295-2019"
             (fmap show . kennitala) "0101012049"  `shouldBe` Right "010101-2049"
             (fmap show . kennitala) "1001012119"  `shouldBe` Right "100101-2119"
+            (fmap show . kennitala) "1110571849"  `shouldBe` Right "111057-1849"
+            (fmap show . kennitala) "0209581979"  `shouldBe` Right "020958-1979"
+            (fmap show . kennitala) "0102560039"  `shouldBe` Right "010256-0039"
 
     describe "gildKennitala" $ do
         it "Man að ap-jún-sept-nóv þrjátíu hver," $ do
@@ -57,12 +58,12 @@ main = hspec $ do
             gildKennitala "0102560039"  `shouldBe` True
 
     describe "vartölu" $ do
-        it "reiknar út vartölu (sem bókstaf) útfrá fyrstu 8 tölustöfunum (sem streng)." $ do
+        it "Reiknar út vartölu (sem bókstaf) útfrá fyrstu 8 tölustöfunum (sem streng)." $ do
             vartölu "12016033" `shouldBe` (Right $ Just '8')
         it "Skilar Right Nothing ef vartalan kemst ekki fyrir í einum tölustaf (bókstaf)." $
             vartölu "10101309" `shouldBe` Right Nothing
     describe "fmap kennitöluHafi . kennitala" $
-        it "ákvarðar hvort kennitala myndi tilheyra einstaklingi eða lögaðila." $ do
+        it "Ákvarðar hvort kennitala myndi tilheyra einstaklingi eða lögaðila." $ do
             (fmap kennitöluHafi . kennitala) "1709715079"  `shouldBe` Right Einstaklingur
             (fmap kennitöluHafi . kennitala) "211295-2019" `shouldBe` Right Einstaklingur
             (fmap kennitöluHafi . kennitala) "4403044350"  `shouldBe` Right Lögaðili

@@ -21,7 +21,9 @@ dagur (Kennitala daggildi _ _ _ _ _) =
 
 data Aðili = Einstaklingur | Lögaðili deriving (Show, Eq)
 kennitöluHafi :: Kennitala -> Aðili
-kennitöluHafi kt = if dagur kt == daggildi kt then Einstaklingur else Lögaðili
+kennitöluHafi kt = if dagur kt == daggildi kt
+    then Einstaklingur
+    else Lögaðili
 
 -- Listi af tveimur seinustu stöfum tölu.
 -- Nú eða núlli og tölunni, ef talan er minni en 10.
@@ -30,8 +32,8 @@ tveggjaStafaTala t = [t `div` 10, t `mod` 10]
 
 instance Show Kennitala where
     show (Kennitala daggildi mánuður ár raðtala vartala öld) =
-        (show =<< tveggjaStafaTala  =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< [raðtala,vartala,öld])
-        -- 20 ≤ raðtala, svo fyrri tölustafurinn er aldrei núll => show raðtala == (show =<< tveggjaStafaTala raðtala)
+        (show =<< tveggjaStafaTala  =<< [daggildi,mánuður,ár])  ++ "-" ++ (show =<< tveggjaStafaTala raðtala) ++ (show =<< [vartala,öld])
+    -- 20 ≤ raðtala, svo fyrri tölustafurinn er aldrei núll => show raðtala == (show =<< tveggjaStafaTala raðtala)
 
 isRight (Left  _) = False
 isRight (Right _) = True
@@ -82,8 +84,11 @@ kennitala [dagtugur,dags,mántugur,mán,áratugur,árs,nr1,nr2,vartala,öld] =
         >>= maybe (Left "Þessi kennitala getur ekki verið rétt. Hún á sér ekki vartölu.")
         (\útreiknuð ->
             if útreiknuð == vartala then Right kt
-                else Left $ "Vartalan " ++ [vartala] ++ " stemmir ekki við útreiknaða vartölu " ++ show útreiknuð ++ ".")
+                else Left $ "Einhver fyrstu níu stafanna í kennitölunni er rangur. Níundi stafurinn ætti að vera " ++ [útreiknuð] ++ " en ekki  " ++ [vartala] ++ " ef fyrstu átta stafirnir eru rétir.")
+
+-- Bandstrik má vera á milli 6. og 7. stafs
 kennitala (dagtug:dag:mántug:mánuð:áratug:ár':'-':rest) = kennitala (dagtug:dag:mántug:mánuð:áratug:ár':rest)
+
 kennitala _ = Left $ "Kennitala þarf að vera 10 tölustafir, að frátöldu valfrjálsu bandstriki."
 
 -- Flestar 8 tölustafa runur eiga sér vartölu.
