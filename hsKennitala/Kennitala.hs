@@ -1,4 +1,7 @@
-module Kennitala where
+module Kennitala (kennitala,gildKennitala,kennitöluHafi,vartölu,
+                  dagur,mánuður,ár,raðtala,vartala,öld,
+                  Aðili(Einstaklingur,Lögaðili),
+                  mánaðardagar,hlaupár) where
 import Text.Read
 import Control.Applicative
 import Data.Traversable
@@ -110,7 +113,7 @@ vartölu strengur = if length strengur /= 8
                 else Just niðurstaða
 
 divisibleBy :: Int -> Int -> Bool
-a `divisibleBy` b = a `mod` b == 0
+a `divisibleBy` b = a `rem` b == 0
 
 -- (=>) :: Bool -> Bool -> Bool
 -- True => False = False

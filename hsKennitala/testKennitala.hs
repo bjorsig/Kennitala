@@ -28,6 +28,7 @@ main = hspec $ do
         it "Staðfestir að mánaðardagur sé mest 31." $ do
             gildKennitala "7201002079"  `shouldBe` False
             gildKennitala "7112102109"  `shouldBe` True
+            gildKennitala "7010810569"  `shouldBe` True
             gildKennitala "3201002089"  `shouldBe` False
         it "Staðfestir að mánaðardagur sé minnst 1." $ do
             gildKennitala "0012002599"  `shouldBe` False
