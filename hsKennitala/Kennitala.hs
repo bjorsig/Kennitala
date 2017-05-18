@@ -1,4 +1,7 @@
-module Kennitala where
+module Kennitala (kennitala,gildKennitala,kennitöluHafi,vartölu,
+                  dagur,mánuður,ár,raðtala,vartala,öld,
+                  Aðili(Einstaklingur,Lögaðili),
+                  mánaðardagar,hlaupár) where
 import Text.Read
 import Control.Applicative
 import Data.Traversable
@@ -63,14 +66,17 @@ tölustaf heiti a = let gildi = fromEnum a - fromEnum '0'
        then Left $ heiti ++ " á að vera tölustafur, ekki " ++ [a] ++ "."
        else Right gildi
 
+bæði :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+bæði = liftA2 (&&)
+
 kennitala :: String -> Either String Kennitala
 kennitala [dagtugur,dags,mántugur,mán,áratugur,árs,nr1,nr2,vartala,öld] =
     Kennitala <$>
-    tala "Dagsetning" (0 < ) dagtugur dags
+    tala "Dagsetning" (0 <) dagtugur dags
         "Daggildi má mest vera 31 fyrir einstaklinga en minnst 41 fyrir félög. Daggildi má vera margt að 71" <*>
-    tala "Mánuður" ((&&) <$> (0<) <*> (<= 12)) mántugur mán "Mánuðirnir eru tólf" <*>
-    tala "Ártal" (0 <  ) áratugur árs "Ár má tákna með hvaða jákvæðu, tveggja stafa tölu sem er" <*>
-    tala "Númer" (0 <= ) nr1 nr2 "Raðtala er allt niður í 00, en oftast frá 20" <*>
+    tala "Mánuður" (bæði (0 <) (<= 12)) mántugur mán "Mánuðirnir eru tólf" <*>
+    tala "Ártal" (0 <) áratugur árs "Ár má tákna með hvaða jákvæðu, tveggja stafa tölu sem er" <*>
+    tala "Númer" (0 <=) nr1 nr2 "Raðtala er allt niður í 00, en oftast frá 20" <*>
     tölustaf "Vartala" vartala <*>
     tölustaf "Öld" öld
 
@@ -110,7 +116,7 @@ vartölu strengur = if length strengur /= 8
                 else Just niðurstaða
 
 divisibleBy :: Int -> Int -> Bool
-a `divisibleBy` b = a `mod` b == 0
+a `divisibleBy` b = a `rem` b == 0
 
 -- (=>) :: Bool -> Bool -> Bool
 -- True => False = False
