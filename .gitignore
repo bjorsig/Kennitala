@@ -56,4 +56,5 @@ build/
 untitled/*
 services/.idea/*
 __pycache__/
+.vscode/*
 #Don't ignore
